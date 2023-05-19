@@ -1,0 +1,26 @@
+version: "3.9"
+
+services:
+  minio:
+    container_name: aapi-minio
+    restart: always
+    image: quay.io/minio/minio:RELEASE.2022-01-08T03-11-54Z
+    command: server --console-address ":9001" /data/minio
+    ports:
+      - 9000:9000
+      - 9001:9001
+    expose:
+      - 9000
+      - 9001
+    environment:
+      MINIO_ROOT_USER: admin
+      MINIO_ROOT_PASSWORD: app@2022
+    volumes:
+      - ./volumes/minio:/data/minio
+    logging:
+      driver: none
+    healthcheck:
+      test: ["CMD", "curl", "-f", "http://localhost:9000/minio/health/live"]
+      interval: 30s
+      timeout: 20s
+      retries: 3

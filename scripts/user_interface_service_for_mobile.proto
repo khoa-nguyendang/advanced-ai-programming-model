@@ -1,0 +1,645 @@
+syntax = "proto3";
+option go_package = "protos/v1;appsvc";
+package appsvc;
+
+service User {
+    rpc Enroll(EnrollRequest) returns(EnrollResponse);
+    rpc Verify(VerifyRequest) returns(VerifyResponse);
+    rpc GetUser(GetUserRequest) returns(GetUserResponse);
+    rpc Update(UpdateRequest) returns(UpdateResponse);
+    rpc CountUser(CountUserRequest) returns(CountUserResponse);
+    rpc SearchUser(SearchUserRequest) returns(SearchUserResponse);
+    rpc Delete(DeleteRequest) returns(DeleteResponse);
+}
+
+service Logging { 
+    rpc AddLog(AddLogRequest) returns(AddLogResponse);
+}
+
+enum ResponseCode { NO_INFO = 0; SUCCESSFULLY = 1; FAILED = 2; ERROR = 3; }
+enum AdministratorState { ACTIVATED = 0; DEACTIVATED = 1; LIMITED = 2; DELETED = 3; RESTRICTED = 4; }
+enum UserState { USER_ENABLED = 0; USER_DISABLED = 1; USER_DELETED = 2; }
+enum RoleType {SYSTEM_USER_ROLE = 0; FACEID_USER_ROLE = 1;}
+
+enum DeviceType { GENERAL = 0; ACCESS_CONTROL = 1; ACM_TEMP = 2; }
+enum LocationType {HOME = 0; OFFICE = 1; TEMPORARY = 2;}
+enum LocationState { SERVING = 0; AVAILABLE = 1; UNAVAILABLE = 2; HIGHLOAD = 3; MAINTAINANCE = 4; RESTRICT = 5; }
+enum DeviceMatchingMode {ONLINE = 0; OFFLINE = 1; MIX = 2; }
+
+message Image {
+    bytes data = 1;
+    string image_id = 2;
+}
+
+//cho man hinh enroll
+message EnrollRequest {
+    string user_id = 1; // User ID - Must be unique
+    string user_name = 2; // Full name
+    string user_info = 3; // Additional user info
+    string user_role = 4; // Mapping to User Role table
+    repeated string user_groups = 5; // Mapping to Use Group table, mobile set it become array of empty string
+
+    int64 user_role_id = 17;
+    repeated int64 user_group_ids = 18;
+    repeated Image images = 20; // Face images
+    string reference_id = 21;   // For system integration. Don't use at this time
+
+    //expiry date
+    int64 expiry_date = 23;
+    //active from date
+    int64 activation_date = 24;
+}
+
+message EnrollResponse {
+    int32 code = 1;
+    string message = 2;
+    string error = 3;
+
+    UserState state = 4;
+}
+
+message VerifyRequest {
+    repeated Image images = 1;
+}
+
+message VerifyResponse {
+    int32 code = 1;
+    string message = 2;
+    string error = 3;
+
+
+    string user_id = 4;
+    string user_name = 5;
+    string user_info = 6;
+    UserState state = 7;
+
+    string user_role = 8;
+    repeated string user_groups = 9;
+
+    string image_id = 10;
+    double score = 11;
+    string thumbnail_image_url = 12;
+
+    int64 last_modified = 13;
+    int64 issued_date = 22;
+    //expiry date
+    int64 expiry_date = 23;
+    //active from date
+    int64 activation_date = 24;
+
+    bool is_active = 25;
+}
+
+message GetUserRequest {
+    int64 user_role_id = 1; // Filter by role id
+    repeated int64 user_group_ids = 2; // Filter by group ids
+    repeated string user_ids = 3; // Filter by user id
+    repeated string reference_ids = 21;   // For system integration. Don't use at this time
+    int64 current_page = 30;
+    int64 page_size = 31; 
+}
+
+message UserData {
+    string user_id = 1;
+    string user_name = 2;
+    string user_role = 3;
+    repeated string user_groups = 4;
+    string user_info = 5; // Additional user info
+    int64 last_modified = 6;
+    UserState state = 7;
+    string thumbnail_image_url = 8;
+    repeated string registered_image_urls = 9;
+
+    int64 user_role_id = 17;
+    repeated int64 user_group_ids = 18;
+
+    repeated Image images = 20; // Face images - Allows to update
+    string reference_id = 21;   // For system integration. Don't use at this time
+
+    int64 issued_date = 22;
+    //expiry date
+    int64 expiry_date = 23;
+    //active from date
+    int64 activation_date = 24;
+
+    bool is_active = 25;
+}
+
+message GetUserResponse {
+    repeated UserData users = 1;
+    int64 current_page = 30;
+    int64 page_size = 31; 
+    int64 total_count = 32;
+}
+
+message CountUserRequest {
+    int64 user_role_id = 1;
+}
+
+message CountUserResponse {
+    int64 total_count = 1;
+}
+
+enum SearchType {PREFIX = 0; WILDCARD = 1;}
+enum UserAttribute {USER_ID = 0; USER_NAME = 1; USER_INFO = 2;}
+
+message SearchUserRequest {
+    SearchType search_type = 1;
+    UserAttribute search_by = 2;
+    string keyword = 3;
+}
+
+message SearchUserResponse {
+    int64 total = 1;
+    repeated UserData users = 2; 
+}
+
+message UpdateRequest {
+    string user_id = 1; // Must exist in the system
+    string user_name = 2;
+    string user_role = 3;
+    repeated string user_groups = 4;
+    string user_info = 5; // Additional user info
+    UserState state = 7;
+
+    int64 user_role_id = 17;
+    repeated int64 user_group_ids = 18;
+    repeated Image images = 20; // Add more face images
+    string reference_id = 21;   // For system integration. Don't use at this time
+    //expiry date
+    int64 expiry_date = 23;
+    //active from date
+    int64 activation_date = 24;
+}
+
+message UpdateResponse {
+    int32 code = 1;
+    string message = 2;
+    string error = 3;
+}
+
+message DeleteRequest {
+    repeated string user_ids = 1;
+    repeated string reference_ids = 21;   // For system integration. Don't use at this time
+}
+
+message DeleteResponse {
+    int32 code = 1;
+    string message = 2;
+    string error = 3;
+
+    repeated string user_ids = 4;
+    repeated string reference_ids = 21;   // For system integration. Don't use at this time
+}
+
+// User Group
+enum GroupState {
+    GROUP_STATE_ACTIVATED = 0;
+	GROUP_STATE_DEACTIVATED = 1;
+	GROUP_STATE_DELETED = 2;
+}
+
+message CreateUserGroupRequest{
+    string name = 1;
+    string description = 2;
+}
+
+message CreateUserGroupResponse{
+    string name = 1;
+    string description = 2;
+    GroupState state = 3;
+    int64 last_modified = 4;
+}
+
+message UpdateUserGroupRequest{
+    string name = 1;
+    string description = 2;
+    GroupState state = 3;
+}
+
+message UpdateUserGroupResponse{
+    string name = 1;
+    string description = 2;
+    GroupState state = 3;
+    int64 last_modified = 4;
+}
+
+message GetUserGroupRequest{
+    repeated string names = 1;
+}
+
+message GetUserGroupResponse{
+    repeated CreateUserGroupResponse groups = 1;
+}
+
+message DeleteUserGroupRequest{
+    repeated string names = 1;
+}
+
+message DeleteUserGroupResponse{
+    repeated string deleted_names = 1;
+}
+
+message VerifyRegisterDevicePasswordRequest {
+    string pass = 1;
+    string device_uuid = 2;
+}
+
+message VerifyRegisterDevicePasswordResponse {
+    int32 code = 1;
+    string message = 2;
+    string error = 3;
+
+    bool result = 4;
+    string admin_token = 5;
+}
+
+message DeviceConfig {
+    bool mask_feature = 1;
+    bool temp_feature = 2;
+    float temp_value = 3;
+    bool anti_spoofing = 4;
+    DeviceMatchingMode matching_mode = 5;
+}
+
+message RegisterDeviceRequest {
+    string company_code = 1;
+    string device_uuid = 2;
+    string device_name = 3;
+    string device_app_version = 4;
+    string device_description = 5;
+    string location_code = 6;
+    DeviceType device_type = 7;
+    DeviceConfig device_config = 8;
+    repeated int64 user_group_ids = 9;
+}
+
+message RegisterDeviceResponse {
+    int32 code = 1;
+    string message = 2;
+    string error = 3;
+    string token = 4;
+    string refresh_token = 5;
+    int64 token_expiry = 6;
+    int64 refresh_token_expiry = 7;
+}
+
+message GetDeviceRequest { 
+    repeated string device_uuids = 1;
+    string location_code = 2;
+}
+
+
+message UpdateDeviceConfigRequest {
+    string device_uuid = 1;
+    DeviceConfig device_config = 2;
+}
+
+message UpdateDeviceConfigResponse {
+    int32 code = 1;
+    string message = 2;
+    string error = 3;
+}
+
+message DeleteDeviceRequest {
+    repeated string device_uuids = 1;
+}
+
+message DeleteDeviceResponse {
+    int32 code = 1;
+    string message = 2;
+    repeated string device_uuids = 3;
+    string error = 4;
+}
+
+message AuthorizeRequest {
+    string location_code = 1;
+    DeviceType device_type = 2;
+    string device_name = 3;
+    string device_app_version = 4;
+    string device_description = 5;
+    string device_uuid = 6;
+}
+
+message AuthorizeResponse {
+    int32 code = 1;
+    string message = 2;
+    string error = 3;
+
+    string token = 4;
+    string refresh_token = 5;
+    int64 token_expiry = 6;
+    int64 refresh_token_expiry = 7;
+}
+
+message GetTokenRequest {
+    string device_uuid = 1;
+    string refresh_token = 2;
+    string expiried_token = 3;
+}
+
+message GetTokenResponse {
+    int32 code = 1;
+    string message = 2;
+    string error = 3;
+
+    string token = 4;
+    string refresh_token = 5;
+    int64 token_expiry = 6;
+    int64 refresh_token_expiry = 7;
+}
+
+message GetRolesRequest {}
+message RoleInfo {
+    int64 id = 1;
+    string role_name = 2;
+    RoleType role_type = 3;
+}
+message GetRolesResponse {
+    repeated RoleInfo roles = 1;
+}
+
+
+message GetPermissionsRequest {}
+message PermissionInfo {
+    int64 id = 1;
+    string permission_name = 3;
+}
+message GetPermissionsResponse {
+    repeated PermissionInfo permissions = 1;
+}
+
+message GetUserPermissionsRequest {
+    int64 app_user_id = 1;
+    string user_id = 2;
+}
+message UserPermission {
+    int64 app_user_id = 1;
+    int64 permission_id = 2;
+    int64 role_id = 3;
+}
+
+message GetUserPermissionsResponse {
+    repeated UserPermission user_permissions = 1;
+}
+
+message GetLocationRequest {
+    repeated string location_codes = 1;
+    string company_code = 2;
+}
+
+message LocationInfo {
+    string location_code = 1;
+    string PIC_id = 2;
+    LocationType type = 3;
+    string name = 4;
+    string description = 5;
+    LocationState state = 6;
+}
+
+message GetLocationResponse {
+    repeated LocationInfo locations = 1;
+}
+
+message GetCompaniesRequest {
+
+}
+
+message CompanyInfo {
+    int64 company_id = 1;
+    string company_name = 2;
+    string company_code = 3;
+    string company_info = 4;
+}
+
+message GetCompaniesResponse {
+    int32 code = 1;
+    string message = 2;
+    string error = 3;
+
+    repeated CompanyInfo companies = 4;
+}
+
+
+message GetGroupsRequest {
+    int64 company_id = 1;
+}
+message GroupInfo {
+    int64 id = 1;
+    string group_name = 2;
+    int64 company_id = 3;
+    string company_code = 4;
+
+    repeated GroupInfo groups = 5;
+}
+message GetGroupsResponse {
+    int32 code = 1;
+    string message = 2;
+    string error = 3;
+
+    repeated GroupInfo groups = 4;
+}
+
+
+message MessageAckRequest {
+    int32 state = 1;
+    string message_uuid = 2;
+}
+
+message MessageAckResponse {
+    int32 code = 1;
+    string message = 2;
+    string error = 3;
+
+    bool recorded = 4;
+}
+
+message SubscribeAckRequest {
+    int32 state = 1;
+    string topic = 2;
+}
+
+message SubscribeAckResponse {
+    int32 code = 1;
+    string message = 2;
+    string error = 3;
+
+    bool recorded = 4;
+}
+
+message GetSubscribersRequest {
+    int32 take = 1;
+    int32 skip = 2;
+    string search_term = 3;
+}
+
+message SubscriberInfo {
+    int64 id = 4;
+    string device_uuid = 5;
+    string company_code = 6;
+    int32 subscribe_state = 7;
+    int64 last_modified = 8;
+    string topic = 9;
+}
+
+message GetSubscribersResponse {
+    int32 code = 1;
+    string message = 2;
+    string error = 3;
+    
+    repeated SubscriberInfo data = 4;
+}
+
+message AddLogRequest {
+    string title = 1;
+    string body = 2;
+    string device_uuid = 3;
+    string company_code = 4;
+    int32 activity = 5;
+    string extra_data = 6;
+    Image image = 7;
+}
+
+message AddLogResponse {
+    int32 code = 1;
+    string message = 2;
+    string error = 3;
+
+    bool status = 4;
+}
+
+message SaveMqttMessageRequest {
+    string message_uuid = 1;
+    string message_type = 2;
+    string from = 3;
+    string to = 4;
+    string topic = 5;
+    string body = 6;
+    int64 created_date = 7;
+    int64 last_modified = 8;
+    bool acknowledge = 9;
+    int64 acknowledge_date = 10;
+    string company_code = 11;
+}
+
+message SaveMqttMessageResponse {
+    int32 code = 1;
+    string message = 2;
+    string error = 3;
+
+    bool status = 4;
+}
+
+
+message ActiveDeviceRequest {
+    string device_uuid = 1;
+    string company_code = 2;
+}
+
+message ActiveDeviceResponse {
+    int32 code = 1;
+    string message = 2;
+    string error = 3;
+
+    bool data = 4; //success or fail
+}
+
+
+message UpdateDeviceStatusResponse  {
+    int32 code = 1;
+    string message = 2;
+    string error = 3;
+
+    bool data = 4; //success or fail
+}
+
+message ResendMessageRequest {
+    string message_uuid = 1;
+    string device_uuid = 2;
+}
+
+message ResendMessageResponse {
+    int32 code = 1;
+    string message = 2;
+    string error = 3;
+
+    bool data = 4; //success or fail
+}
+
+message GetMessageByUuidRequest {
+    string message_uuid = 1;
+    string device_uuid = 2;
+}
+
+message GetMessageByUuidResponse {
+    int32 code = 1;
+    string message = 2;
+    string error = 3;
+
+    string message_uuid = 4;
+    string message_type = 5;
+    string from = 6;
+    string to = 7;
+    string topic = 8;
+    string body = 9;
+    int64 created_date = 10;
+    int64 last_modified = 11;
+    bool acknowledge = 12;
+    int64 acknowledge_date = 13;
+}
+
+
+message UpdateAPKVersionRequest {
+    string latest_version = 1;
+    string latest_version_code = 2;
+    string minio_path = 3;
+    repeated string release_notes = 4;
+    bytes apk_file = 5;
+}
+
+message UpdateAPKVersionResponse {
+    int32 code = 1;
+    string message = 2;
+    string error = 3;
+}
+
+message SetDeviceVersionRequest {
+    string device_uuid = 1;
+    string version_applied = 2;
+}
+
+message SetDeviceVersionResponse {
+    int32 code = 1;
+    string message = 2;
+    string error = 3;
+}
+
+message NotifyNewUpdateAvailableRequest {
+    bool force_all_devices = 1;
+}
+
+message NotifyNewUpdateAvailableResponse {
+    int32 code = 1;
+    string message = 2;
+    string error = 3;
+    
+    string latest_version = 4;
+    string latest_version_code = 5;
+    string url =  6;
+    repeated string release_notes = 7;
+}
+
+message CheckNewUpdateAvailableRequest {
+    string current_version = 1;
+}
+
+message CheckNewUpdateAvailableResponse {
+    int32 code = 1;
+    string message = 2;
+    string error = 3;
+    
+    string latest_version = 4;
+    string latest_version_code = 5;
+    string url =  6;
+    repeated string release_notes = 7;
+}

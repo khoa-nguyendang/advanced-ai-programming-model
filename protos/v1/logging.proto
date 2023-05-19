@@ -1,0 +1,96 @@
+syntax = "proto3";
+option go_package = "protos/v1;appsvc";
+package appsvc;
+import public "common.proto";
+
+service Logging { 
+    rpc AddLog(AddLogRequest) returns(AddLogResponse);
+    rpc GetLog(QueryRequest) returns(QueryResponse);
+    rpc GetLogs(GetLogsRequest) returns(GetLogsResponse);
+    rpc ScheduleReport(ScheduleReportRequest) returns(ScheduleReportResponse);
+}
+
+message AddLogRequest {
+    string title = 1;
+    string body = 2;
+    string device_uuid = 3;
+    string company_code = 4;
+    int32 activity = 5;
+    string extra_data = 6;
+    Image image = 7; 
+}
+
+message AddLogResponse {
+    int32 code = 1;
+    string message = 2;
+    string error = 3;
+
+    bool status = 4;
+}
+
+message QueryRequest {
+    int64 start_date = 1;
+    int64 end_date = 2;
+    repeated string device_uuids = 3;
+    repeated string user_ids = 4;
+    bool save_to_file = 5;
+}
+
+message Log {
+    string company_code = 1;
+    string user_id = 2;
+    string user_name = 3;
+    UserState user_state = 4;
+    int64 activity = 5;
+    string device_uuid = 6;
+    int64 date = 7;
+
+    int64 id = 8;
+}
+
+message QueryResponse {
+    repeated Log logs = 1;
+    bytes report_file = 2;
+}
+
+message GetLogsRequest {
+    int64 start_date = 1;
+    int64 end_date = 2;
+    repeated string device_uuids = 3;
+    repeated string user_ids = 4;
+    bool save_to_file = 5;
+
+    int32 page = 6;
+    int32 size = 7;
+    string company_code =8;
+}
+
+message GetLogsResponse {
+    int32 code = 1;
+    string message = 2;
+    string error = 3;
+
+    repeated Log data = 4;
+    bytes report_file = 5;
+    int32 total = 6;
+}
+
+enum JobTime {
+    EVERY_HOUR = 0; EVERY_DAY = 1; EVERY_WEEK = 2; EVERY_MONTH = 3; EVERY_YEAR = 4;
+}
+
+enum ReportType {
+    SAVE_REPORT = 0; SEND_EMAIL = 1;
+}
+
+message ScheduleReportRequest {
+    JobTime job_time = 1;
+    // Every 1 day, every 2 days, every 3 days ...
+    int64 job_time_count = 2;
+    ReportType report_type = 3;
+    repeated string recipients = 4;
+}
+
+message ScheduleReportResponse {
+    string data = 1;
+}

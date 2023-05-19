@@ -1,0 +1,2 @@
+python3 -m grpc_tools.protoc  -I . --python_out=../ --grpc_python_out=../ app/main/grpc/ai_engine.proto
+python3 -m grpc_tools.protoc  -I . --python_out=../ --grpc_python_out=../ app/main/grpc/faiss.proto

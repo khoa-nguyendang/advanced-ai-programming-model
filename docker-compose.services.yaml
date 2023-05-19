@@ -1,0 +1,291 @@
+version: "3.9"
+services:
+  web-ui:
+    container_name: web-ui
+    restart: always
+    image: web-ui
+    build:
+      context: ./externals/web-ui
+      dockerfile: Dockerfile
+    ports:
+      - 1080:80
+    expose:
+      - 80
+    depends_on:
+      - aapi-restful-server
+    networks:
+      - microservice_network
+
+  aapi-restful-server:
+    container_name: aapi-restful-server
+    restart: always
+    image: aapi-restful-server
+    build:
+      context: .
+      dockerfile: Dockerfile.gateway
+    entrypoint: ./restful-server --grpc-server-endpoint aapi-server:9090
+    ports:
+      - 8081:8081
+    expose:
+      - 8081
+    environment:
+      - config="/config"
+    depends_on:
+      - aapi-server
+      - jaeger
+    networks:
+      - microservice_network
+      
+  aapi-server:
+    container_name: aapi-server
+    build: .
+    entrypoint: app-service aapiserver 9090
+    image: aapi-service
+    restart: always
+    ports:
+      - 9090:9090
+    expose:
+      - 9090
+    environment:
+      - config="/config"
+    depends_on:
+      - redis-master
+      - redis-replica
+      - aapimysql
+      - user-service
+      - logging-service
+      - aapi-kafka
+      - aapimongodb
+      - minio
+    networks:
+      - microservice_network
+
+  user-service:
+    container_name: user-service
+    entrypoint: app-service user-service 9091 
+    image: aapi-service
+    restart: always
+    ports:
+      - 9091:9091
+    expose:
+      - 9091
+    environment:
+      - ACL_FEATURE=ENABLED
+      - VERIFICATION_IMAGE_LOG=ENABLED
+      - VERIFICATION_CSV_LOG=DISABLED
+      - VERIFICATION_EVENT=ENABLED
+      - config="/config"
+    depends_on:
+      - redis-master
+      - redis-replica
+      - aapimysql
+      - aapi-faiss-service
+      - aapi-engine-service
+      - aapi-kafka
+      - aapimongodb
+      - minio
+    networks:
+      - microservice_network
+    volumes:
+      - "/etc/timezone:/etc/timezone:ro"
+      - "/etc/localtime:/etc/localtime:ro"
+
+  logging-service:
+    container_name: logging-service
+    entrypoint: app-service logging-service 9096 
+    image: aapi-service
+    restart: always
+    ports:
+      - 9096:9096
+    expose:
+      - 9096
+    depends_on:
+      - redis-master
+      - redis-replica
+      - aapimysql
+      - aapimongodb
+      - aapi-kafka
+      - jaeger
+    networks:
+      - microservice_network
+    volumes:
+      - "/etc/timezone:/etc/timezone:ro"
+      - "/etc/localtime:/etc/localtime:ro"
+
+  aapi-faiss-service:
+    container_name: aapi-faiss-service
+    image: aapi-faiss-service:dev
+    build:
+      context: ./externals/faiss-service
+      dockerfile: Dockerfile
+    restart: always
+    ports:
+      - "50051:50051"
+    expose:
+      - 50051
+    depends_on:
+      - aapimongodb
+      - redis-master
+      - minio
+    environment:
+      - MATCH_SCORE_THRESHOLD=0.65
+      - MASKED_MATCH_SCORE_THRESHOLD=0.51
+      - SERVER_PORT=50051
+      - DATABASE_HOST=aapimongodb
+      - DATABASE_USERNAME=app_User
+      - DATABASE_PASSWORD=app_Password1234
+      - DATABASE_FACE_INFO=face_info
+      - DATABASE_NAME=faiss
+      - DATABASE_PORT=27017
+      - CLOUD_SERVICE_ENV=Production
+    networks:
+      - microservice_network
+    volumes:
+      - "/etc/timezone:/etc/timezone:ro"
+      - "/etc/localtime:/etc/localtime:ro"
+
+  aapi-engine-service :
+    container_name: aapi-engine-service
+    image: aapi-engine-service:dev
+    build:
+      context: ./externals/engine-service
+      dockerfile: Dockerfile
+    restart: always
+    command: python run.py
+    ports:
+      - "50053:50053"
+    expose:
+      - 50053
+    depends_on:
+      - aapi-faiss-service
+      - redis-master
+      - aapimongodb
+      - minio
+    environment:
+      - SERVER_PORT=50053
+      - FAISS_SERVICE_HOST=aapi-faiss-service
+      - FAISS_SERVICE_PORT=50051
+      - MAX_ENGINE=6
+      - GET_MODEL_FROM_CLOUD=DISABLED
+      - VERIFICATION_IMAGE_LOG=ENABLED
+      - MINIMUM_ENROLLMENT_IMAGE=1
+      - MINIO_ENDPOINT=minio:9000
+      - MINIO_ENGINE_MODEL_BUCKET=engine-model
+      - MINIO_ROOT_USER=admin
+      - MINIO_ROOT_PASSWORD=app@2022
+      - CLOUD_SERVICE_ENV=Production
+    networks:
+      - microservice_network
+    volumes:
+      - "/etc/timezone:/etc/timezone:ro"
+      - "/etc/localtime:/etc/localtime:ro"
+
+  jaeger:
+    container_name: jaeger_container
+    restart: always
+    image: jaegertracing/all-in-one:1.21
+    environment:
+      - COLLECTOR_ZIPKIN_HTTP_PORT=9411
+    ports:
+      - 5775:5775/udp
+      - 6831:6831/udp
+      - 6832:6832/udp
+      - 5778:5778
+      - 16686:16686
+      - 14268:14268
+      - 14250:14250
+      - 9411:9411
+    logging:
+      driver: none
+    networks:
+      - microservice_network
+
+  minio:
+    container_name: aapi-minio
+    restart: always
+    image: quay.io/minio/minio:RELEASE.2022-01-08T03-11-54Z
+    command: server --console-address ":9001" /data/minio
+    ports:
+      - 9000:9000
+      - 9001:9001
+    networks:
+      - microservice_network
+    expose:
+      - 9000
+      - 9001
+    environment:
+      MINIO_ROOT_USER: admin
+      MINIO_ROOT_PASSWORD: app@2022
+    volumes:
+      - ./volumes/minio:/data/minio
+    logging:
+      driver: none
+    healthcheck:
+      test: ["CMD", "curl", "-f", "http://localhost:9000/minio/health/live"]
+      interval: 30s
+      timeout: 20s
+      retries: 3
+
+  zookeeper:
+    image: confluentinc/cp-zookeeper:latest
+    hostname: zookeeper
+    container_name: aapi-zookeeper
+    restart: always
+    environment:
+      - ZOOKEEPER_CLIENT_PORT=2181
+      - ZOOKEEPER_TICK_TIME=2000
+    volumes:
+      - ./volumes/zookeeper:/data
+      - ./volumes/zookeeper:/datalog
+    ports:
+      - 2181:2181
+    logging:
+      driver: none
+    networks:
+      - microservice_network
+
+
+  aapi-kafka:
+    image: confluentinc/cp-kafka:7.2.0
+    hostname: aapi-kafka
+    container_name: aapi-kafka
+    ports:
+      - "9092:9092"
+      - "29092:29092"
+      - "9999:9999"
+    environment:
+      KAFKA_ADVERTISED_LISTENERS: PLAINTEXT://aapi-kafka:9092,DOCKER://host.docker.internal:29092
+      KAFKA_LISTENER_SECURITY_PROTOCOL_MAP: PLAINTEXT:PLAINTEXT,EXTERNAL:PLAINTEXT,DOCKER:PLAINTEXT,PLAINTEXT_HOST:PLAINTEXT
+      KAFKA_INTER_BROKER_LISTENER_NAME: PLAINTEXT
+      KAFKA_ZOOKEEPER_CONNECT: "zookeeper:2181"
+      KAFKA_BROKER_ID: 1
+      KAFKA_LOG4J_LOGGERS: "kafka.controller=INFO,kafka.producer.async.DefaultEventHandler=INFO,state.change.logger=INFO"
+      KAFKA_OFFSETS_TOPIC_REPLICATION_FACTOR: 1
+      KAFKA_TRANSACTION_STATE_LOG_REPLICATION_FACTOR: 1
+      KAFKA_TRANSACTION_STATE_LOG_MIN_ISR: 1
+      KAFKA_JMX_PORT: 9999
+      KAFKA_JMX_HOSTNAME: ${DOCKER_HOST_IP:-127.0.0.1}
+      KAFKA_AUTHORIZER_CLASS_NAME: kafka.security.authorizer.AclAuthorizer
+      KAFKA_ALLOW_EVERYONE_IF_NO_ACL_FOUND: "true"
+      KAFKA_AUTO_CREATE_TOPICS_ENABLE: "true"
+      KAFKA_CREATE_TOPICS: "audit-data-updated:1:1,user-service-verification-topic:1:1"
+    depends_on:
+      - zookeeper
+    networks:
+      - microservice_network
+    extra_hosts:
+      - "host.docker.internal:host-gateway"
+
+  kafka-ui:
+    image: provectuslabs/kafka-ui
+    container_name: kafka-ui
+    ports:
+      - "8080:8080"
+    restart: always
+    environment:
+      - KAFKA_CLUSTERS_0_NAME=local
+      - KAFKA_CLUSTERS_0_BOOTSTRAPSERVERS=aapi-kafka:9092
+    networks:
+      - microservice_network
+    extra_hosts:
+      - "host.docker.internal:host-gateway"

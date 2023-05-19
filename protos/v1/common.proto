@@ -1,0 +1,13 @@
+syntax = "proto3";
+option go_package = "protos/v1;appsvc";
+package appsvc;
+
+
+enum ResponseCode { NO_INFO = 0; SUCCESSFULLY = 1; FAILED = 2; ERROR = 3; }
+enum AdministratorState { ACTIVATED = 0; DEACTIVATED = 1; LIMITED = 2; DELETED = 3; RESTRICTED = 4; }
+enum UserState { USER_ENABLED = 0; USER_DISABLED = 1; USER_DELETED = 2; }
+enum RoleType {SYSTEM_USER_ROLE = 0; FACEID_USER_ROLE = 1;}
+message Image {
+    bytes data = 1;
+    string image_id = 2;
+}

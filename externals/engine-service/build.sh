@@ -1,0 +1,1 @@
+docker build -t aapi-engine-service .

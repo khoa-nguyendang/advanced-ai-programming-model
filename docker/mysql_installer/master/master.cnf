@@ -1,0 +1,10 @@
+[mysqld]
+server-id=1
+authentication_policy=mysql_native_password
+log-bin=mysql-bin
+log-replica-updates=1
+datadir=/var/lib/mysql/
+innodb_flush_log_at_trx_commit = 2
+innodb_flush_method = O_DIRECT
+skip-host-cache
+skip-name-resolve

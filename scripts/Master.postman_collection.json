@@ -1,0 +1,115 @@
+{
+	"info": {
+		"_postman_id": "4732d7d9-314f-44a4-a228-270ce8bfcbc1",
+		"name": "Master",
+		"schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json",
+		"_exporter_id": "1299823"
+	},
+	"item": [
+		{
+			"name": "advanced-ai-programming",
+			"item": [
+				{
+					"name": "localhost:8081/enroll",
+					"request": {
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "formdata",
+							"formdata": [
+								{
+									"key": "images",
+									"type": "file",
+									"src": "/C:/Users/Khoa/Downloads/images/images/bachtx12/bachtx12_3_1637313781663.jpg"
+								},
+								{
+									"key": "UserId",
+									"value": "4",
+									"type": "text"
+								},
+								{
+									"key": "ReferenceId",
+									"value": "user-4",
+									"type": "text"
+								},
+								{
+									"key": "UserInfo",
+									"value": "{\"first\":\"bachtx12\",\"last\":\"To\",\"phone\":\"123_lchau\",\"email\":\"chau@gmail.com\"}",
+									"type": "text"
+								},
+								{
+									"key": "UserName",
+									"value": "user-4",
+									"type": "text"
+								}
+							]
+						},
+						"url": {
+							"raw": "localhost:8081/enroll",
+							"host": [
+								"localhost"
+							],
+							"port": "8081",
+							"path": [
+								"enroll"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "localhost:8081/verify",
+					"request": {
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "formdata",
+							"formdata": [
+								{
+									"key": "images",
+									"type": "file",
+									"src": "/C:/Users/Khoa/Downloads/images/images/anhnt124/anhnt124_1_1636429110131.png"
+								},
+								{
+									"key": "UserId",
+									"value": "1",
+									"type": "text",
+									"disabled": true
+								},
+								{
+									"key": "ReferenceId",
+									"value": "user-1",
+									"type": "text",
+									"disabled": true
+								},
+								{
+									"key": "UserInfo",
+									"value": "{\"first\":\"Khoa\",\"last\":\"Nguyen\",\"phone\":\"123\",\"email\":\"khoa@gmail.com\"}",
+									"type": "text",
+									"disabled": true
+								},
+								{
+									"key": "UserName",
+									"value": "user-1",
+									"type": "text",
+									"disabled": true
+								}
+							]
+						},
+						"url": {
+							"raw": "localhost:8081/verify",
+							"host": [
+								"localhost"
+							],
+							"port": "8081",
+							"path": [
+								"verify"
+							]
+						}
+					},
+					"response": []
+				}
+			]
+		}
+	]
+}

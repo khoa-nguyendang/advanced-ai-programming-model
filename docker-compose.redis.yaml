@@ -1,0 +1,42 @@
+version: "3.9"
+services:
+  redis-master:
+    container_name: redis-master
+    restart: always
+    image: redis
+    ports:
+      - 6379:6379
+    expose:
+      - 6379
+    healthcheck:
+      test: ["CMD", "redis-cli","ping"]
+      interval: 5s
+      timeout: 3s
+      retries: 10
+    logging:
+      driver: none
+    networks:
+      - microservice_network
+
+  redis-replica:
+    container_name: redis-replica
+    restart: always
+    image: redis
+    command: redis-server --slaveof redis-master 6379
+    ports:
+      - 6380:6379
+    expose:
+      - 6380
+    depends_on:
+      - redis-master
+    links:
+      - redis-master
+    healthcheck:
+      test: ["CMD", "redis-cli","ping"]
+      interval: 5s
+      timeout: 3s
+      retries: 10
+    logging:
+      driver: none
+    networks:
+      - microservice_network

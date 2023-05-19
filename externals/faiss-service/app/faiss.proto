@@ -1,0 +1,65 @@
+syntax = "proto3";
+option go_package = "services/user/protos/faiss/v1;faiss";
+package faiss;
+
+enum StatusCode {
+    ENGINE_ERROR = 0;
+    SUCCESS = 1;
+    BAD_IMAGE = 2;
+    BAD_VECTOR = 3;
+    IMAGE_REGISTERED_FOR_ANOTHER_USER = 4;
+    FOUND = 5;
+    NOT_FOUND = 6;
+}
+
+message Vector {
+    string vector_id = 1; // Optional
+    repeated double data = 2;
+}
+
+// The request to register a user and his/her face images
+message VectorEnrollmentRequest {
+    // User ID, managed by other service
+    string user_uid = 1; // (Required)
+    // One user can have many face images
+    repeated Vector vectors = 2; // (Required)
+}
+
+// The request to delete all face ids of the given user_uid
+message VectorDeletionRequest {
+    repeated string image_ids = 1; // Delete by image id
+    string user_uid = 2; // Or delete by user id
+}
+
+message VectorEnrollmentResponse {
+    StatusCode code = 1;
+    string message = 2; // Optional message from server
+}
+
+message VectorSearchRequest {
+    repeated Vector vectors = 1;
+}
+
+message VectorSearchResponse {
+    StatusCode code = 1;
+    string message = 2;
+    string user_uid = 3;  // Empty when user image not found
+    string image_id = 4; // The image_id of the first mached image
+    double score = 5; // The matching score for debugging purpose
+}
+
+message VectorDeletionResponse {
+    StatusCode code = 1;
+    string message = 2; // Optional message from server
+}
+
+service VectorAPI {
+    // Enrollment API
+    rpc Enroll (VectorEnrollmentRequest) returns (VectorEnrollmentResponse);
+
+    // Search user_uid by vector
+    rpc Search (VectorSearchRequest) returns (VectorSearchResponse);
+
+    // Remove user_uid and its face images in DB
+    rpc Delete (VectorDeletionRequest) returns (VectorDeletionResponse);
+}

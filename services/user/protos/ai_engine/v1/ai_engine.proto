@@ -1,0 +1,53 @@
+syntax = "proto3";
+option go_package = "services/user/protos/ai_engine/v1;ai_engine";
+package ai_engine;
+
+enum StatusCode {
+    ENGINE_ERROR = 0;
+    SUCCESS = 1;
+    BAD_IMAGE = 2;
+    BAD_VECTOR = 3;
+    IMAGE_REGISTERED_FOR_ANOTHER_USER = 4;
+    FOUND = 5;
+    NOT_FOUND = 6;
+}
+
+// Face Image
+message Image {
+    bytes data = 1;
+    // Image ID, managed by other service
+    string image_id = 2;
+}
+
+// The request to register a user and his/her face images
+message ImageEnrollmentRequest {
+    // User ID, managed by other service
+    string user_uid = 1; // (Required)
+    // One user can have many face images
+    repeated Image images = 2; // (Required)
+}
+
+message ImageSearchRequest {
+    repeated Image images = 1;
+}
+
+message ImageEnrollmentResponse {
+    StatusCode code = 1;
+    string message = 2; // Optional message from server
+}
+
+message ImageSearchResponse {
+    StatusCode code = 1; // FOUND or NOT_FOUND
+    string message = 2; // Optional message from server
+    string user_uid = 4;  // Empty when user image not found
+    string image_id = 5; // The image_id of the first mached image
+    double score = 6; // The matching score for debugging purpose
+}
+
+service ImageAPI {
+    // Enrollment API
+    rpc Enroll (ImageEnrollmentRequest) returns (ImageEnrollmentResponse);
+
+    // Search user_uid by image
+    rpc Search (ImageSearchRequest) returns (ImageSearchResponse);
+}

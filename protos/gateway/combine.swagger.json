@@ -1,0 +1,1065 @@
+{
+  "swagger": "2.0",
+  "info": {
+    "title": "App",
+    "version": "1.0",
+    "contact": {
+      "name": "khoa-nguyendang",
+      "url": "https://github.com/khoa-nguyendang",
+      "email": "khoa.nguyendang@outlook.com"
+    },
+    "license": {
+      "name": "BSD 3-Clause License",
+      "url": "https://github.com/khoa-nguyendang/LICENSE"
+    }
+  },
+  "tags": [
+    {
+      "name": "Logging"
+    },
+    {
+      "name": "User"
+    }
+  ],
+  "schemes": [
+    "http",
+    "https"
+  ],
+  "consumes": [
+    "application/json"
+  ],
+  "produces": [
+    "application/json"
+  ],
+  "paths": {
+    "/api/v1/logging/get-log": {
+      "post": {
+        "operationId": "Logging_GetLog",
+        "responses": {
+          "200": {
+            "description": "A successful response.",
+            "schema": {
+              "$ref": "#/definitions/appsvcQueryResponse"
+            }
+          },
+          "default": {
+            "description": "An unexpected error response.",
+            "schema": {
+              "$ref": "#/definitions/rpcStatus"
+            }
+          }
+        },
+        "parameters": [
+          {
+            "name": "body",
+            "in": "body",
+            "required": true,
+            "schema": {
+              "$ref": "#/definitions/appsvcQueryRequest"
+            }
+          }
+        ],
+        "tags": [
+          "Logging"
+        ]
+      }
+    },
+    "/api/v1/logging/get-logs": {
+      "post": {
+        "operationId": "Logging_GetLogs",
+        "responses": {
+          "200": {
+            "description": "A successful response.",
+            "schema": {
+              "$ref": "#/definitions/appsvcGetLogsResponse"
+            }
+          },
+          "default": {
+            "description": "An unexpected error response.",
+            "schema": {
+              "$ref": "#/definitions/rpcStatus"
+            }
+          }
+        },
+        "parameters": [
+          {
+            "name": "body",
+            "in": "body",
+            "required": true,
+            "schema": {
+              "$ref": "#/definitions/appsvcGetLogsRequest"
+            }
+          }
+        ],
+        "tags": [
+          "Logging"
+        ]
+      }
+    },
+    "/api/v1/logging/schedule-report": {
+      "post": {
+        "operationId": "Logging_ScheduleReport",
+        "responses": {
+          "200": {
+            "description": "A successful response.",
+            "schema": {
+              "$ref": "#/definitions/appsvcScheduleReportResponse"
+            }
+          },
+          "default": {
+            "description": "An unexpected error response.",
+            "schema": {
+              "$ref": "#/definitions/rpcStatus"
+            }
+          }
+        },
+        "parameters": [
+          {
+            "name": "body",
+            "in": "body",
+            "required": true,
+            "schema": {
+              "$ref": "#/definitions/appsvcScheduleReportRequest"
+            }
+          }
+        ],
+        "tags": [
+          "Logging"
+        ]
+      }
+    },
+    "/api/v1/user/count-user": {
+      "post": {
+        "operationId": "User_CountUser",
+        "responses": {
+          "200": {
+            "description": "A successful response.",
+            "schema": {
+              "$ref": "#/definitions/appsvcCountUserResponse"
+            }
+          },
+          "default": {
+            "description": "An unexpected error response.",
+            "schema": {
+              "$ref": "#/definitions/rpcStatus"
+            }
+          }
+        },
+        "parameters": [
+          {
+            "name": "body",
+            "in": "body",
+            "required": true,
+            "schema": {
+              "$ref": "#/definitions/appsvcCountUserRequest"
+            }
+          }
+        ],
+        "tags": [
+          "User"
+        ]
+      }
+    },
+    "/api/v1/user/delete": {
+      "post": {
+        "operationId": "User_Delete",
+        "responses": {
+          "200": {
+            "description": "A successful response.",
+            "schema": {
+              "$ref": "#/definitions/appsvcDeleteResponse"
+            }
+          },
+          "default": {
+            "description": "An unexpected error response.",
+            "schema": {
+              "$ref": "#/definitions/rpcStatus"
+            }
+          }
+        },
+        "parameters": [
+          {
+            "name": "body",
+            "in": "body",
+            "required": true,
+            "schema": {
+              "$ref": "#/definitions/appsvcDeleteRequest"
+            }
+          }
+        ],
+        "tags": [
+          "User"
+        ]
+      }
+    },
+    "/api/v1/user/enroll": {
+      "post": {
+        "operationId": "User_Enroll",
+        "responses": {
+          "200": {
+            "description": "A successful response.",
+            "schema": {
+              "$ref": "#/definitions/appsvcEnrollResponse"
+            }
+          },
+          "default": {
+            "description": "An unexpected error response.",
+            "schema": {
+              "$ref": "#/definitions/rpcStatus"
+            }
+          }
+        },
+        "parameters": [
+          {
+            "name": "body",
+            "in": "body",
+            "required": true,
+            "schema": {
+              "$ref": "#/definitions/appsvcEnrollRequest"
+            }
+          }
+        ],
+        "tags": [
+          "User"
+        ]
+      }
+    },
+    "/api/v1/user/get-user": {
+      "post": {
+        "operationId": "User_GetUser",
+        "responses": {
+          "200": {
+            "description": "A successful response.",
+            "schema": {
+              "$ref": "#/definitions/appsvcGetUserResponse"
+            }
+          },
+          "default": {
+            "description": "An unexpected error response.",
+            "schema": {
+              "$ref": "#/definitions/rpcStatus"
+            }
+          }
+        },
+        "parameters": [
+          {
+            "name": "body",
+            "in": "body",
+            "required": true,
+            "schema": {
+              "$ref": "#/definitions/appsvcGetUserRequest"
+            }
+          }
+        ],
+        "tags": [
+          "User"
+        ]
+      }
+    },
+    "/api/v1/user/search-user": {
+      "post": {
+        "operationId": "User_SearchUser",
+        "responses": {
+          "200": {
+            "description": "A successful response.",
+            "schema": {
+              "$ref": "#/definitions/appsvcSearchUserResponse"
+            }
+          },
+          "default": {
+            "description": "An unexpected error response.",
+            "schema": {
+              "$ref": "#/definitions/rpcStatus"
+            }
+          }
+        },
+        "parameters": [
+          {
+            "name": "body",
+            "in": "body",
+            "required": true,
+            "schema": {
+              "$ref": "#/definitions/appsvcSearchUserRequest"
+            }
+          }
+        ],
+        "tags": [
+          "User"
+        ]
+      }
+    },
+    "/api/v1/user/update": {
+      "post": {
+        "operationId": "User_Update",
+        "responses": {
+          "200": {
+            "description": "A successful response.",
+            "schema": {
+              "$ref": "#/definitions/appsvcUpdateResponse"
+            }
+          },
+          "default": {
+            "description": "An unexpected error response.",
+            "schema": {
+              "$ref": "#/definitions/rpcStatus"
+            }
+          }
+        },
+        "parameters": [
+          {
+            "name": "body",
+            "in": "body",
+            "required": true,
+            "schema": {
+              "$ref": "#/definitions/appsvcUpdateRequest"
+            }
+          }
+        ],
+        "tags": [
+          "User"
+        ]
+      }
+    },
+    "/api/v1/user/verify": {
+      "post": {
+        "operationId": "User_Verify",
+        "responses": {
+          "200": {
+            "description": "A successful response.",
+            "schema": {
+              "$ref": "#/definitions/appsvcVerifyResponse"
+            }
+          },
+          "default": {
+            "description": "An unexpected error response.",
+            "schema": {
+              "$ref": "#/definitions/rpcStatus"
+            }
+          }
+        },
+        "parameters": [
+          {
+            "name": "body",
+            "in": "body",
+            "required": true,
+            "schema": {
+              "$ref": "#/definitions/appsvcVerifyRequest"
+            }
+          }
+        ],
+        "tags": [
+          "User"
+        ]
+      }
+    }
+  },
+  "definitions": {
+    "appsvcCountUserRequest": {
+      "type": "object",
+      "properties": {
+        "userRoleId": {
+          "type": "string",
+          "format": "int64"
+        }
+      }
+    },
+    "appsvcCountUserResponse": {
+      "type": "object",
+      "properties": {
+        "totalCount": {
+          "type": "string",
+          "format": "int64"
+        }
+      }
+    },
+    "appsvcDeleteRequest": {
+      "type": "object",
+      "properties": {
+        "userIds": {
+          "type": "array",
+          "items": {
+            "type": "string"
+          }
+        },
+        "referenceIds": {
+          "type": "array",
+          "items": {
+            "type": "string"
+          }
+        }
+      }
+    },
+    "appsvcDeleteResponse": {
+      "type": "object",
+      "properties": {
+        "code": {
+          "type": "integer",
+          "format": "int32"
+        },
+        "message": {
+          "type": "string"
+        },
+        "error": {
+          "type": "string"
+        },
+        "userIds": {
+          "type": "array",
+          "items": {
+            "type": "string"
+          }
+        },
+        "referenceIds": {
+          "type": "array",
+          "items": {
+            "type": "string"
+          }
+        }
+      }
+    },
+    "appsvcEnrollRequest": {
+      "type": "object",
+      "properties": {
+        "userId": {
+          "type": "string"
+        },
+        "userName": {
+          "type": "string"
+        },
+        "userInfo": {
+          "type": "string"
+        },
+        "userRole": {
+          "type": "string"
+        },
+        "userGroups": {
+          "type": "array",
+          "items": {
+            "type": "string"
+          }
+        },
+        "userRoleId": {
+          "type": "string",
+          "format": "int64"
+        },
+        "userGroupIds": {
+          "type": "array",
+          "items": {
+            "type": "string",
+            "format": "int64"
+          }
+        },
+        "images": {
+          "type": "array",
+          "items": {
+            "$ref": "#/definitions/appsvcImage"
+          }
+        },
+        "referenceId": {
+          "type": "string"
+        },
+        "expiryDate": {
+          "type": "string",
+          "format": "int64",
+          "title": "expiry date"
+        },
+        "activationDate": {
+          "type": "string",
+          "format": "int64",
+          "title": "active from date"
+        }
+      }
+    },
+    "appsvcEnrollResponse": {
+      "type": "object",
+      "properties": {
+        "code": {
+          "type": "integer",
+          "format": "int32"
+        },
+        "message": {
+          "type": "string"
+        },
+        "error": {
+          "type": "string"
+        },
+        "state": {
+          "$ref": "#/definitions/appsvcUserState"
+        }
+      }
+    },
+    "appsvcGetLogsRequest": {
+      "type": "object",
+      "properties": {
+        "startDate": {
+          "type": "string",
+          "format": "int64"
+        },
+        "endDate": {
+          "type": "string",
+          "format": "int64"
+        },
+        "deviceUuids": {
+          "type": "array",
+          "items": {
+            "type": "string"
+          }
+        },
+        "userIds": {
+          "type": "array",
+          "items": {
+            "type": "string"
+          }
+        },
+        "saveToFile": {
+          "type": "boolean"
+        },
+        "page": {
+          "type": "integer",
+          "format": "int32"
+        },
+        "size": {
+          "type": "integer",
+          "format": "int32"
+        },
+        "companyCode": {
+          "type": "string"
+        }
+      }
+    },
+    "appsvcGetLogsResponse": {
+      "type": "object",
+      "properties": {
+        "code": {
+          "type": "integer",
+          "format": "int32"
+        },
+        "message": {
+          "type": "string"
+        },
+        "error": {
+          "type": "string"
+        },
+        "data": {
+          "type": "array",
+          "items": {
+            "$ref": "#/definitions/appsvcLog"
+          }
+        },
+        "reportFile": {
+          "type": "string",
+          "format": "byte"
+        },
+        "total": {
+          "type": "integer",
+          "format": "int32"
+        }
+      }
+    },
+    "appsvcGetUserRequest": {
+      "type": "object",
+      "properties": {
+        "userRoleId": {
+          "type": "string",
+          "format": "int64"
+        },
+        "userGroupIds": {
+          "type": "array",
+          "items": {
+            "type": "string",
+            "format": "int64"
+          }
+        },
+        "userIds": {
+          "type": "array",
+          "items": {
+            "type": "string"
+          }
+        },
+        "referenceIds": {
+          "type": "array",
+          "items": {
+            "type": "string"
+          }
+        },
+        "currentPage": {
+          "type": "string",
+          "format": "int64"
+        },
+        "pageSize": {
+          "type": "string",
+          "format": "int64"
+        }
+      }
+    },
+    "appsvcGetUserResponse": {
+      "type": "object",
+      "properties": {
+        "users": {
+          "type": "array",
+          "items": {
+            "$ref": "#/definitions/appsvcUserData"
+          }
+        },
+        "currentPage": {
+          "type": "string",
+          "format": "int64"
+        },
+        "pageSize": {
+          "type": "string",
+          "format": "int64"
+        },
+        "totalCount": {
+          "type": "string",
+          "format": "int64"
+        }
+      }
+    },
+    "appsvcImage": {
+      "type": "object",
+      "properties": {
+        "data": {
+          "type": "string",
+          "format": "byte"
+        },
+        "imageId": {
+          "type": "string"
+        }
+      }
+    },
+    "appsvcJobTime": {
+      "type": "string",
+      "enum": [
+        "EVERY_HOUR",
+        "EVERY_DAY",
+        "EVERY_WEEK",
+        "EVERY_MONTH",
+        "EVERY_YEAR"
+      ],
+      "default": "EVERY_HOUR"
+    },
+    "appsvcLog": {
+      "type": "object",
+      "properties": {
+        "companyCode": {
+          "type": "string"
+        },
+        "userId": {
+          "type": "string"
+        },
+        "userName": {
+          "type": "string"
+        },
+        "userState": {
+          "$ref": "#/definitions/appsvcUserState"
+        },
+        "activity": {
+          "type": "string",
+          "format": "int64"
+        },
+        "deviceUuid": {
+          "type": "string"
+        },
+        "date": {
+          "type": "string",
+          "format": "int64"
+        },
+        "id": {
+          "type": "string",
+          "format": "int64"
+        }
+      }
+    },
+    "appsvcQueryRequest": {
+      "type": "object",
+      "properties": {
+        "startDate": {
+          "type": "string",
+          "format": "int64"
+        },
+        "endDate": {
+          "type": "string",
+          "format": "int64"
+        },
+        "deviceUuids": {
+          "type": "array",
+          "items": {
+            "type": "string"
+          }
+        },
+        "userIds": {
+          "type": "array",
+          "items": {
+            "type": "string"
+          }
+        },
+        "saveToFile": {
+          "type": "boolean"
+        }
+      }
+    },
+    "appsvcQueryResponse": {
+      "type": "object",
+      "properties": {
+        "logs": {
+          "type": "array",
+          "items": {
+            "$ref": "#/definitions/appsvcLog"
+          }
+        },
+        "reportFile": {
+          "type": "string",
+          "format": "byte"
+        }
+      }
+    },
+    "appsvcReportType": {
+      "type": "string",
+      "enum": [
+        "SAVE_REPORT",
+        "SEND_EMAIL"
+      ],
+      "default": "SAVE_REPORT"
+    },
+    "appsvcScheduleReportRequest": {
+      "type": "object",
+      "properties": {
+        "jobTime": {
+          "$ref": "#/definitions/appsvcJobTime"
+        },
+        "jobTimeCount": {
+          "type": "string",
+          "format": "int64",
+          "description": "Every 1 day, every 2 days, every 3 days ..."
+        },
+        "reportType": {
+          "$ref": "#/definitions/appsvcReportType"
+        },
+        "recipients": {
+          "type": "array",
+          "items": {
+            "type": "string"
+          }
+        }
+      }
+    },
+    "appsvcScheduleReportResponse": {
+      "type": "object",
+      "properties": {
+        "data": {
+          "type": "string"
+        }
+      }
+    },
+    "appsvcSearchType": {
+      "type": "string",
+      "enum": [
+        "PREFIX",
+        "WILDCARD"
+      ],
+      "default": "PREFIX"
+    },
+    "appsvcSearchUserRequest": {
+      "type": "object",
+      "properties": {
+        "searchType": {
+          "$ref": "#/definitions/appsvcSearchType"
+        },
+        "searchBy": {
+          "$ref": "#/definitions/appsvcUserAttribute"
+        },
+        "keyword": {
+          "type": "string"
+        },
+        "userRoleId": {
+          "type": "string",
+          "format": "int64"
+        }
+      }
+    },
+    "appsvcSearchUserResponse": {
+      "type": "object",
+      "properties": {
+        "total": {
+          "type": "string",
+          "format": "int64"
+        },
+        "users": {
+          "type": "array",
+          "items": {
+            "$ref": "#/definitions/appsvcUserData"
+          }
+        }
+      }
+    },
+    "appsvcUpdateRequest": {
+      "type": "object",
+      "properties": {
+        "userId": {
+          "type": "string"
+        },
+        "userName": {
+          "type": "string"
+        },
+        "userRole": {
+          "type": "string"
+        },
+        "userGroups": {
+          "type": "array",
+          "items": {
+            "type": "string"
+          }
+        },
+        "userInfo": {
+          "type": "string"
+        },
+        "state": {
+          "$ref": "#/definitions/appsvcUserState"
+        },
+        "userRoleId": {
+          "type": "string",
+          "format": "int64"
+        },
+        "userGroupIds": {
+          "type": "array",
+          "items": {
+            "type": "string",
+            "format": "int64"
+          }
+        },
+        "images": {
+          "type": "array",
+          "items": {
+            "$ref": "#/definitions/appsvcImage"
+          }
+        },
+        "referenceId": {
+          "type": "string"
+        },
+        "expiryDate": {
+          "type": "string",
+          "format": "int64",
+          "title": "expiry date"
+        },
+        "activationDate": {
+          "type": "string",
+          "format": "int64",
+          "title": "active from date"
+        }
+      }
+    },
+    "appsvcUpdateResponse": {
+      "type": "object",
+      "properties": {
+        "code": {
+          "type": "integer",
+          "format": "int32"
+        },
+        "message": {
+          "type": "string"
+        },
+        "error": {
+          "type": "string"
+        }
+      }
+    },
+    "appsvcUserAttribute": {
+      "type": "string",
+      "enum": [
+        "USER_ID",
+        "USER_NAME",
+        "USER_INFO"
+      ],
+      "default": "USER_ID"
+    },
+    "appsvcUserData": {
+      "type": "object",
+      "properties": {
+        "userId": {
+          "type": "string"
+        },
+        "userName": {
+          "type": "string"
+        },
+        "userRole": {
+          "type": "string"
+        },
+        "userGroups": {
+          "type": "array",
+          "items": {
+            "type": "string"
+          }
+        },
+        "userInfo": {
+          "type": "string"
+        },
+        "lastModified": {
+          "type": "string",
+          "format": "int64"
+        },
+        "state": {
+          "$ref": "#/definitions/appsvcUserState"
+        },
+        "thumbnailImageUrl": {
+          "type": "string"
+        },
+        "registeredImageUrls": {
+          "type": "array",
+          "items": {
+            "type": "string"
+          }
+        },
+        "userRoleId": {
+          "type": "string",
+          "format": "int64"
+        },
+        "userGroupIds": {
+          "type": "array",
+          "items": {
+            "type": "string",
+            "format": "int64"
+          }
+        },
+        "images": {
+          "type": "array",
+          "items": {
+            "$ref": "#/definitions/appsvcImage"
+          }
+        },
+        "referenceId": {
+          "type": "string"
+        },
+        "issuedDate": {
+          "type": "string",
+          "format": "int64"
+        },
+        "expiryDate": {
+          "type": "string",
+          "format": "int64",
+          "title": "expiry date"
+        },
+        "activationDate": {
+          "type": "string",
+          "format": "int64",
+          "title": "active from date"
+        },
+        "isActive": {
+          "type": "boolean"
+        }
+      }
+    },
+    "appsvcUserState": {
+      "type": "string",
+      "enum": [
+        "USER_ENABLED",
+        "USER_DISABLED",
+        "USER_DELETED"
+      ],
+      "default": "USER_ENABLED"
+    },
+    "appsvcVerifyRequest": {
+      "type": "object",
+      "properties": {
+        "images": {
+          "type": "array",
+          "items": {
+            "$ref": "#/definitions/appsvcImage"
+          }
+        }
+      }
+    },
+    "appsvcVerifyResponse": {
+      "type": "object",
+      "properties": {
+        "code": {
+          "type": "integer",
+          "format": "int32"
+        },
+        "message": {
+          "type": "string"
+        },
+        "error": {
+          "type": "string"
+        },
+        "userId": {
+          "type": "string"
+        },
+        "userName": {
+          "type": "string"
+        },
+        "userInfo": {
+          "type": "string"
+        },
+        "state": {
+          "$ref": "#/definitions/appsvcUserState"
+        },
+        "userRole": {
+          "type": "string"
+        },
+        "userGroups": {
+          "type": "array",
+          "items": {
+            "type": "string"
+          }
+        },
+        "imageId": {
+          "type": "string"
+        },
+        "score": {
+          "type": "number",
+          "format": "double"
+        },
+        "thumbnailImageUrl": {
+          "type": "string"
+        },
+        "lastModified": {
+          "type": "string",
+          "format": "int64"
+        },
+        "issuedDate": {
+          "type": "string",
+          "format": "int64"
+        },
+        "expiryDate": {
+          "type": "string",
+          "format": "int64",
+          "title": "expiry date"
+        },
+        "activationDate": {
+          "type": "string",
+          "format": "int64",
+          "title": "active from date"
+        },
+        "isActive": {
+          "type": "boolean"
+        }
+      }
+    },
+    "protobufAny": {
+      "type": "object",
+      "properties": {
+        "@type": {
+          "type": "string"
+        }
+      },
+      "additionalProperties": {}
+    },
+    "rpcStatus": {
+      "type": "object",
+      "properties": {
+        "code": {
+          "type": "integer",
+          "format": "int32"
+        },
+        "message": {
+          "type": "string"
+        },
+        "details": {
+          "type": "array",
+          "items": {
+            "$ref": "#/definitions/protobufAny"
+          }
+        }
+      }
+    }
+  }
+}

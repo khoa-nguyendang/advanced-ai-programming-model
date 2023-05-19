@@ -1,0 +1,333 @@
+syntax = "proto3";
+option go_package = "protos/v1;appsvc";
+package appsvc;
+
+import "google/api/annotations.proto";
+import "protoc-gen-openapiv2/options/annotations.proto";
+
+option (grpc.gateway.protoc_gen_openapiv2.options.openapiv2_swagger) = {
+    info: {
+        title: "App";
+        version: "1.0";
+        contact: {
+            name: "khoa-nguyendang";
+            url: "https://github.com/khoa-nguyendang";
+            email: "khoa.nguyendang@outlook.com";
+        };
+        license: {
+            name: "BSD 3-Clause License";
+            url: "https://github.com/khoa-nguyendang/LICENSE";
+        };
+    };
+
+    schemes: HTTP;
+    schemes: HTTPS;
+    consumes: "application/json";
+    produces: "application/json";
+};
+
+
+
+service Logging {
+    rpc GetLog(QueryRequest) returns(QueryResponse) {
+        option (google.api.http) = {
+            post: "/api/v1/logging/get-log",
+            body: "*"
+        };
+    }
+    rpc GetLogs(GetLogsRequest) returns(GetLogsResponse) {
+        option (google.api.http) = {
+            post: "/api/v1/logging/get-logs",
+            body: "*"
+        };
+    }
+    rpc ScheduleReport(ScheduleReportRequest) returns(ScheduleReportResponse) {
+        option (google.api.http) = {
+            post: "/api/v1/logging/schedule-report",
+            body: "*"
+        };
+    }
+}
+
+service User {
+    rpc Enroll(EnrollRequest) returns(EnrollResponse) {
+        option (google.api.http) = {
+            post: "/api/v1/user/enroll",
+            body: "*"
+        };
+    }
+    rpc Verify(VerifyRequest) returns(VerifyResponse) {
+        option (google.api.http) = {
+            post: "/api/v1/user/verify",
+            body: "*"
+        };
+    }
+    rpc GetUser(GetUserRequest) returns(GetUserResponse) {
+        option (google.api.http) = {
+            post: "/api/v1/user/get-user",
+            body: "*"
+        };
+    }
+    rpc SearchUser(SearchUserRequest) returns(SearchUserResponse) {
+        option (google.api.http) = {
+            post: "/api/v1/user/search-user",
+            body: "*"
+        };
+    }
+    rpc CountUser(CountUserRequest) returns(CountUserResponse) {
+        option (google.api.http) = {
+            post: "/api/v1/user/count-user",
+            body: "*"
+        };
+    }
+
+    rpc Update(UpdateRequest) returns(UpdateResponse) {
+        option (google.api.http) = {
+            post: "/api/v1/user/update",
+            body: "*"
+        };
+    }
+    rpc Delete(DeleteRequest) returns(DeleteResponse) {
+        option (google.api.http) = {
+            post: "/api/v1/user/delete",
+            body: "*"
+        };
+    }
+    
+}
+
+enum ResponseCode { NO_INFO = 0; SUCCESSFULLY = 1; FAILED = 2; ERROR = 3; }
+enum UserState { USER_ENABLED = 0; USER_DISABLED = 1; USER_DELETED = 2; }
+
+message QueryRequest {
+    int64 start_date = 1;
+    int64 end_date = 2;
+    repeated string device_uuids = 3;
+    repeated string user_ids = 4;
+    bool save_to_file = 5;
+}
+
+message Log {
+    string company_code = 1;
+    string user_id = 2;
+    string user_name = 3;
+    UserState user_state = 4;
+    int64 activity = 5;
+    string device_uuid = 6;
+    int64 date = 7;
+
+    int64 id = 8;
+}
+
+message QueryResponse {
+    repeated Log logs = 1;
+    bytes report_file = 2;
+}
+
+message GetLogsRequest {
+    int64 start_date = 1;
+    int64 end_date = 2;
+    repeated string device_uuids = 3;
+    repeated string user_ids = 4;
+    bool save_to_file = 5;
+
+    int32 page = 6;
+    int32 size = 7;
+    string company_code =8;
+}
+
+message GetLogsResponse {
+    int32 code = 1;
+    string message = 2;
+    string error = 3;
+
+    repeated Log data = 4;
+    bytes report_file = 5;
+    int32 total = 6;
+}
+
+enum JobTime {
+    EVERY_HOUR = 0; EVERY_DAY = 1; EVERY_WEEK = 2; EVERY_MONTH = 3; EVERY_YEAR = 4;
+}
+
+enum ReportType {
+    SAVE_REPORT = 0; SEND_EMAIL = 1;
+}
+
+message ScheduleReportRequest {
+    JobTime job_time = 1;
+    // Every 1 day, every 2 days, every 3 days ...
+    int64 job_time_count = 2;
+    ReportType report_type = 3;
+    repeated string recipients = 4;
+}
+
+message ScheduleReportResponse {
+    string data = 1;
+}
+
+message Image {
+    bytes data = 1;
+    string image_id = 2;
+}
+
+message EnrollRequest {
+    string user_id = 1; // User ID - Must be unique
+    string user_name = 2; // Full name
+    string user_info = 3; // Additional user info
+    string user_role = 4; // Mapping to User Role table
+    repeated string user_groups = 5; // Mapping to Use Group table
+
+    int64 user_role_id = 17;
+    repeated int64 user_group_ids = 18;
+    repeated Image images = 20; // Face images
+    string reference_id = 21;   // For system integration. Don't use at this time
+
+    //expiry date
+    int64 expiry_date = 23;
+    //active from date
+    int64 activation_date = 24;
+}
+
+message EnrollResponse {
+    int32 code = 1;
+    string message = 2;
+    string error = 3;
+
+    UserState state = 4;
+}
+
+message VerifyRequest {
+    repeated Image images = 1; 
+}
+
+message VerifyResponse {
+    int32 code = 1;
+    string message = 2;
+    string error = 3;
+
+
+    string user_id = 4;
+    string user_name = 5;
+    string user_info = 6;
+    UserState state = 7;
+
+    string user_role = 8;
+    repeated string user_groups = 9;
+
+    string image_id = 10;
+    double score = 11;
+    string thumbnail_image_url = 12;
+
+    int64 last_modified = 13;
+    int64 issued_date = 22;
+    //expiry date
+    int64 expiry_date = 23;
+    //active from date
+    int64 activation_date = 24;
+
+    bool is_active = 25;
+}
+
+message GetUserRequest {
+    int64 user_role_id = 1; // Filter by role id
+    repeated int64 user_group_ids = 2; // Filter by group ids
+    repeated string user_ids = 3; // Filter by user id
+    repeated string reference_ids = 21;   // For system integration. Don't use at this time
+    int64 current_page = 30;
+    int64 page_size = 31; 
+}
+
+message UserData {
+    string user_id = 1;
+    string user_name = 2;
+    string user_role = 3;
+    repeated string user_groups = 4;
+    string user_info = 5; // Additional user info
+    int64 last_modified = 6;
+    UserState state = 7;
+    string thumbnail_image_url = 8;
+    repeated string registered_image_urls = 9;
+
+    int64 user_role_id = 17;
+    repeated int64 user_group_ids = 18;
+
+    repeated Image images = 20; // Face images - Allows to update
+    string reference_id = 21;   // For system integration. Don't use at this time
+
+    int64 issued_date = 22;
+    //expiry date
+    int64 expiry_date = 23;
+    //active from date
+    int64 activation_date = 24;
+
+    bool is_active = 25;
+}
+
+message GetUserResponse {
+    repeated UserData users = 1;
+    int64 current_page = 30;
+    int64 page_size = 31; 
+    int64 total_count = 32;
+}
+
+message CountUserRequest {
+    int64 user_role_id = 1;
+}
+
+message CountUserResponse {
+    int64 total_count = 1;
+}
+
+enum SearchType {PREFIX = 0; WILDCARD = 1;}
+enum UserAttribute {USER_ID = 0; USER_NAME = 1; USER_INFO = 2;}
+
+message SearchUserRequest {
+    SearchType search_type = 1;
+    UserAttribute search_by = 2;
+    string keyword = 3;
+    int64 user_role_id = 4;
+}
+
+message SearchUserResponse {
+    int64 total = 1;
+    repeated UserData users = 2; 
+}
+
+message UpdateRequest {
+    string user_id = 1; // Must exist in the system
+    string user_name = 2;
+    string user_role = 3;
+    repeated string user_groups = 4;
+    string user_info = 5; // Additional user info
+    UserState state = 7;
+
+    int64 user_role_id = 17;
+    repeated int64 user_group_ids = 18;
+    repeated Image images = 20; // Add more face images
+    string reference_id = 21;   // For system integration. Don't use at this time
+    //expiry date
+    int64 expiry_date = 23;
+    //active from date
+    int64 activation_date = 24;
+}
+
+message UpdateResponse {
+    int32 code = 1;
+    string message = 2;
+    string error = 3;
+}
+
+message DeleteRequest {
+    repeated string user_ids = 1;
+    repeated string reference_ids = 21;   // For system integration. Don't use at this time
+}
+
+message DeleteResponse {
+    int32 code = 1;
+    string message = 2;
+    string error = 3;
+
+    repeated string user_ids = 4;
+    repeated string reference_ids = 21;   // For system integration. Don't use at this time
+}

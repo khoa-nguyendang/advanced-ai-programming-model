@@ -1,0 +1,31 @@
+version: "3.9"
+
+services:
+  aapimongodb:
+    hostname: aapimongodb
+    container_name: aapimongodb
+    restart: always
+    image: mongo:latest
+    ports:
+      - 27017:27017
+    expose:
+      - 27017
+    volumes:
+      - ./volumes/mongodb_data:/data/db
+      - ./volumes/mongodb_config:/data/configdb
+      - ./docker/mongodb:/scripts:ro
+    environment:
+      - MONGO_INITDB_ROOT_USERNAME=app_User
+      - MONGO_INITDB_ROOT_PASSWORD=app_Password1234
+      - MONGO_INITDB_DATABASE=admin
+    healthcheck:
+      test: test $$(echo "rs.initiate().ok || rs.status().ok" | mongo -u $${MONGO_INITDB_ROOT_USERNAME} -p $${MONGO_INITDB_ROOT_PASSWORD} --authenticationDatabase faiss --quiet) -eq 1
+      interval: 15s
+      timeout: 10s
+      retries: 5
+    logging:
+      driver: none
+    networks:
+      - microservice_network
+    extra_hosts:
+      - "host.docker.internal:host-gateway"

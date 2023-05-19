@@ -1,0 +1,134 @@
+version: "3.9"
+
+networks:
+  microservice_network:
+    driver: bridge
+
+volumes:
+  mongodb_data:
+    driver: local
+    external: false
+    driver_opts:
+      type: 'nfs'
+      o: 'bind'
+      device: './volumes/mongodb_data'
+
+  mongodb_config:
+    driver: local
+    external: false
+    driver_opts:
+      type: 'nfs'
+      o: 'bind'
+      device: './volumes/mongodb_config'
+  
+  mongodb_data_replicas_1:
+    driver: local
+    external: false
+    driver_opts:
+      type: 'nfs'
+      o: 'bind'
+      device: './volumes/mongodb_data_replicas_1'
+
+  mongodb_config_replicas_1:
+    driver: local
+    external: false
+    driver_opts:
+      type: 'nfs'
+      o: 'bind'
+      device: './volumes/mongodb_config_replicas_1'
+
+  mongodb_data_replicas_2:
+    driver: local
+    external: false
+    driver_opts:
+      type: 'nfs'
+      o: 'bind'
+      device: './volumes/mongodb_data_replicas_2'
+
+  mongodb_config_replicas_2:
+    driver: local
+    external: false
+    driver_opts:
+      type: 'nfs'
+      o: 'bind'
+      device: './volumes/mongodb_config_replicas_2'
+
+  mysqldb_data:
+    driver: local
+    external: false
+    driver_opts:
+      type: 'nfs'
+      o: 'bind'
+      device: './volumes/mysqldb'
+
+  mysqldb_data_rep1:
+    driver: local
+    external: false
+    driver_opts:
+      type: 'nfs'
+      o: 'bind'
+      device: './volumes/mysqldb_rep1'
+
+  minio_data:
+    driver: local
+    external: false
+    driver_opts:
+      type: 'nfs'
+      o: 'bind'
+      device: './volumes/minio'
+
+  zookeeper_data:
+    driver: local
+    external: false
+    driver_opts:
+      type: 'nfs'
+      o: 'bind'
+      device: './volumes/zookeeper'
+
+  kafka_data:
+    driver: local
+    external: false
+    driver_opts:
+      type: 'nfs'
+      o: 'bind'
+      device: './volumes/kafka'
+
+  mosquitto_data:
+    driver: local
+    external: false
+    driver_opts:
+      type: 'nfs'
+      o: 'bind'
+      device: './volumes/mosquitto'
+
+  elasticsearch_data:
+    driver: local
+    external: false
+    driver_opts:
+      type: 'nfs'
+      o: 'bind'
+      device: './volumes/elasticsearch'
+
+  logstash_pipeline_data:
+    driver: local
+    external: false
+    driver_opts:
+      type: 'nfs'
+      o: 'bind'
+      device: './volumes/logstash/pipeline'
+
+  logstash_config_data:
+    driver: local
+    external: false
+    driver_opts:
+      type: 'nfs'
+      o: 'bind'
+      device: './volumes/logstash/config'
+
+  logstash_queries_data:
+    driver: local
+    external: false
+    driver_opts:
+      type: 'nfs'
+      o: 'bind'
+      device: './volumes/logstash/config/queries'

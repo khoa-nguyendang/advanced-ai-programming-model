@@ -1,0 +1,38 @@
+version: 2
+jobs:
+  build:
+    docker:
+      - image: circleci/python:3.7.4
+
+    working_directory: ~/faiss
+
+    steps:
+      - checkout
+
+      - restore_cache:
+          keys:
+            - v1-dependencies-{{ checksum "requirements_dev.txt" }}
+            - v1-dependencies-
+
+      - run:
+          name: install dependencies
+          command: |
+            sudo apt-get install libopenblas-dev libomp-dev -y
+            python3 -m venv venv
+            . venv/bin/activate
+            pip install -r requirements_dev.txt
+
+      - save_cache:
+          paths:
+            - ./venv
+          key: v1-dependencies-{{ checksum "requirements_dev.txt" }}
+
+      - run:
+          name: run tests
+          command: |
+            . venv/bin/activate
+            CLOUD_SERVICE_ENV=Test py.test -v
+
+      - store_artifacts:
+          path: test-reports
+          destination: test-reports

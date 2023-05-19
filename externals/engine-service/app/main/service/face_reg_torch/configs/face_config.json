@@ -1,0 +1,9 @@
+{
+    "model_path": "models/weight_7000.pt",
+    "image_size": [112, 112],
+    "model_params": {
+        "num_features": 512,
+        "blocks": [1, 4, 6, 2],
+        "scale": 2
+    }
+}

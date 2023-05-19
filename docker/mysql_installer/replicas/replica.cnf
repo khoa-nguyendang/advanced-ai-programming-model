@@ -1,0 +1,12 @@
+[mysqld]
+server-id=2
+authentication_policy=mysql_native_password
+log-bin=mysql-bin
+log-replica-updates=1
+auto_increment_increment=2
+auto_increment_offset=2
+datadir=/var/lib/mysql
+read-only=1
+replica-skip-errors = 1062
+skip-host-cache
+skip-name-resolve

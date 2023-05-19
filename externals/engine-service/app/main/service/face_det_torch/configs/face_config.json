@@ -1,0 +1,59 @@
+{
+    "load_to_cpu": true,
+    "model_path": "models/20230226/iter_8000.pth",
+    "resize": 1.0,
+    "image_size": [
+        640,
+        640
+    ],
+    "confidence_threshold": 0.02,
+    "top_k": 100,
+    "variance": [
+        0.1,
+        0.2
+    ],
+    "keep_top_k": 100,
+    "nms_threshold": 0.4,
+    "vis_thres": 0.6,
+    "visual_mode": true,
+    "architecture": {
+        "Backbone": {
+            "name": "mobinet_v1",
+            "in_channel": 32,
+            "return_layers": {
+                "stage1": 1,
+                "stage2": 2,
+                "stage3": 3
+            }
+        },
+        "Neck": {
+            "name": "FPN"
+        },
+        "Head": {
+            "name": "HeadRetina",
+            "out_channel": 64
+        }
+    },
+    "priorbox_cfg": {
+        "clip": false,
+        "min_sizes": [
+            [
+                16,
+                32
+            ],
+            [
+                64,
+                128
+            ],
+            [
+                256,
+                512
+            ]
+        ],
+        "steps": [
+            8,
+            16,
+            32
+        ]
+    }
+}

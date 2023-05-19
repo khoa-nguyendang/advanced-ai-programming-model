@@ -1,0 +1,144 @@
+server:
+  AppVersion: 1.0.0
+  Port: :5000
+  PprofPort: :5555
+  Mode: Development
+  JwtSecretKey: secretkey
+  JwtExpireInHour: 360
+  RefreshSecretKey: refreshSecretKey
+  RefreshTokenExpireInHour: 3600
+  CookieName: jwt-token
+  ReadTimeout: 5
+  WriteTimeout: 5
+  SSL: false
+  CtxDefaultTimeout: 12
+  CSRF: true
+  Debug: true
+  MaxConnectionIdle: 5
+  Timeout: 15
+  MaxConnectionAge: 5
+  Time: 120
+  CacheExpiryShort: 600000000000
+  CacheExpiryMedium: 3600000000000
+  CacheExpiryLong: 14400000000000
+  CacheExpiryDayLong: 86400000000000
+  HashKey: 8YivRHLzCmnwXBE7TZIRTt210ju5MnE9
+  PassKey: MehrBgJkXvMxcyLUQPO7zTAb2aWX6bCwPDaU
+  IvKey: MehrBgJkXvMxcyLU
+
+
+rabbitmq:
+  Host: localhost
+  Port: 5672
+  User: root
+  Password: 1234567
+  Exchange: aapi-exchange
+  Queue: aapi-queue
+  RoutingKey: aapi-routing-key
+  ConsumerTag: aapi-consumer
+  WorkerPoolSize: 24
+
+
+logger:
+  Development: true
+  DisableCaller: false
+  DisableStacktrace: false
+  Encoding: json
+  Level: info
+
+mysql:
+  MysqlHost: aapimysql
+  MysqlPort: 3306
+  MysqlUser: app_User
+  MysqlPassword: app_Password
+  MysqlDbname: app
+  MysqlDriver: mysql
+
+mongodb:
+  MongodbHost: aapimongodb
+  MongodbPort: 27017
+  MongodbUser: app_User
+  MongodbPassword: app_Password%401234
+  MongodbDbname: faiss
+  MongodbDriver: mongo-go-driver
+
+
+redis:
+  RedisAddr: redis-master:6379
+  RedisPassword:
+  RedisDb: 0
+  RedisDefaultdb: 0
+  MinIdleConns: 200
+  PoolSize: 12000
+  PoolTimeout: 240
+  Password: ""
+  DB: 0
+
+redisReplica:
+  RedisAddr: redis-replica:6380
+  RedisPassword:
+  RedisDb: 0
+  RedisDefaultdb: 0
+  MinIdleConns: 200
+  PoolSize: 12000
+  PoolTimeout: 240
+  Password: ""
+  DB: 0
+
+cookie:
+  Name: jwt-token
+  MaxAge: 86400
+  Secure: false
+  HttpOnly: true
+
+session:
+  Name: session-id
+  Prefix: api-session
+  Expire: 3600
+
+metrics:
+  Url: 0.0.0.0:7070
+  ServiceName: auth_microservice
+
+AppFaiss:
+  Url: aapi-faiss-service:50051
+  ServiceName: aapi-faiss-service
+
+AppEngine:
+  Url: aapi-engine-service:50053
+  ServiceName: aapi-engine-service
+
+AppLightweightEngine:
+  Url: aapi-lightweight-engine-service:50055
+  ServiceName: aapi-lightweight-engine-service
+
+UserService: user-service:9091
+LoggingService: logging-service:9096
+PublisherServer: http://localhost:8081
+
+jaeger:
+  Host: localhost:6831
+  ServiceName: app_service
+  LogSpans: false
+
+minio:
+  Endpoint: minio:9000
+  AccessKeyID: admin
+  SecretAccessKey: app@2022
+
+kafka:
+  Server: aapi-kafka:9092
+  AuditLogServer: aapi-kafka:9092
+  Username: admin
+  Password: admin
+
+elasticsearch:
+  Server: http://elasticsearch:9200
+  Username: elastic
+  Password: app@2022
+
+mqtt:
+  Broker: tcp://103.63.109.59:1883
+  Port: 1883
+  UserName: admin
+  Password: admin

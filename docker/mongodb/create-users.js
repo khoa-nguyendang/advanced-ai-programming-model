@@ -1,0 +1,2 @@
+db.createUser( { user: 'app_User', pwd: 'app_Password1234', roles: [ { role: 'readWrite', db: 'admin' }]});
+db.createUser( { user: 'app_User', pwd: 'app_Password1234', roles: [ { role: 'readWrite', db: 'faiss' }]});

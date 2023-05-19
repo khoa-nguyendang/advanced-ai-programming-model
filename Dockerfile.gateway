@@ -1,0 +1,15 @@
+FROM golang:alpine as builder
+COPY . /aapirestful-server
+WORKDIR  /aapirestful-server
+
+ENV GOOS=linux
+ENV GOARCH=amd64
+
+RUN export CGO_ENABLED=0 && go build  -tags musl -ldflags="-s -w"  -o restful-server ./restful_cmd/...
+
+FROM scratch
+COPY --from=builder /aapirestful-server/config /config
+COPY --from=builder /aapirestful-server/protos/gateway /temp
+COPY --from=builder /aapirestful-server/services/user/protos/user/v1 /temp
+COPY --from=builder /aapirestful-server/restful-server /restful-server
+
